@@ -1,184 +1,118 @@
 <div align="center">
-<img src="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/master/images/libero_logo.png" width="360">
-
-
-<p align="center">
-<a href="https://github.com/Lifelong-Robot-Learning/LIBERO/actions">
-<img alt="Tests Passing" src="https://github.com/anuraghazra/github-readme-stats/workflows/Test/badge.svg" />
-</a>
-<a href="https://github.com/Lifelong-Robot-Learning/LIBERO/graphs/contributors">
-<img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Lifelong-Robot-Learning/LIBERO" />
-</a>
-<a href="https://github.com/Lifelong-Robot-Learning/LIBERO/issues">
-<img alt="Issues" src="https://img.shields.io/github/issues/Lifelong-Robot-Learning/LIBERO?color=0088ff" />
-
-## **Benchmarking Knowledge Transfer for Lifelong Robot Learning**
-
-Bo Liu, Yifeng Zhu, Chongkai Gao, Yihao Feng, Qiang Liu, Yuke Zhu, Peter Stone
-
-[[Website]](https://libero-project.github.io)
-[[Paper]](https://arxiv.org/pdf/2306.03310.pdf)
-[[Docs]](https://lifelong-robot-learning.github.io/LIBERO/)
-______________________________________________________________________
-![pull_figure](https://github.com/Lifelong-Robot-Learning/LIBERO/blob/master/images//fig1.png)
+  <img src="images/LIEBRO-FT_logo2.png" width="360">
+  
+  # LIBERO-FT: Evaluating Robotic Manipulation with Force-Related Domain Shifts
 </div>
 
-**LIBERO** is designed for studying knowledge transfer in multitask and lifelong robot learning problems. Successfully resolving these problems require both declarative knowledge about objects/spatial relationships and procedural knowledge about motion/behaviors. **LIBERO** provides:
-- a procedural generation pipeline that could in principle generate an infinite number of manipulation tasks.
-- 130 tasks grouped into four task suites: **LIBERO-Spatial**, **LIBERO-Object**, **LIBERO-Goal**, and **LIBERO-100**. The first three task suites have controlled distribution shifts, meaning that they require the transfer of a specific type of knowledge. In contrast, **LIBERO-100** consists of 100 manipulation tasks that require the transfer of entangled knowledge. **LIBERO-100** is further splitted into **LIBERO-90** for pretraining a policy and **LIBERO-10** for testing the agent's downstream lifelong learning performance.
-- five research topics.
-- three visuomotor policy network architectures.
-- three lifelong learning algorithms with the sequential finetuning and multitask learning baselines.
+
+## Overview
+
+`LIBERO-FT` is a toolkit (including benchmark) developed for evaluating robotic manipulation under force-related domain shifts. 
+Highly based on the LIBERO benchmark, it can be considered an extension that builds upon its core functionality. 
+Key features include extracting 6D wrench force-torque data from the simulator (Mujoco), replaying and saving benchmark trajectories, 
+and modifying physical properties like gripper stiffness and friction to simulate domain shifts (based on Robosuite). 
+This repository aims to provide a robust framework for testing and evaluating the adaptability of robotic models to 
+varying mechanical conditions, enabling thorough analysis before deploying force-based policies into real-world scenarios.
+
+
+## Features
+
+- **Read Mujoco 6D force-torque data (MujocoSensorReader)**: Reads raw 6D wrench force-torque data from the native Mujoco sensors and exposes it to the LIBERO `OffScreenRenderEnv` via the `WrenchObsWrapper`.
+- **Replay original LIBERO demonstrations and save force-torque data (HDF5Replayer)**: Replays full trajectories based on LIBERO benchmark demonstrations (e.g., LIBERO-90), reading and saving force-torque data into new HDF5 files.
+- **Physical domain shift (PhysicsHelper)**: Modifies physical properties like gripper stiffness, friction, and gravity in Robosuite, and evaluates model robustness against mechanical domain shifts using the `LiberoForceSocketEvaluator`.
+- **A training&testing example**: Demonstrates training and testing of a diffusion policy with added mechanical inputs, evaluating performance under various domain shifts after in-domain training.
+
+## Installation
+
+To use `LIBERO-FT`, follow the steps below to install dependencies and set up the repository.
+
+### Prerequisites
+
+- Python 3.7+
+- Robosuite (and its dependencies)
+- [Other necessary libraries like `numpy`, `matplotlib`, `pandas`, etc.]
+
+### Clone the Repository
+
+""
+git clone https://github.com/your-username/LIBERO-FT.git
+cd LIBERO-FT
+"" id="4w2zrt"
+
+### Install Dependencies
+
+""
+pip install -r requirements.txt
+"" id="o2kjxx"
+
+> **Note**: If you don't have Robosuite installed, please follow the [official Robosuite installation guide](https://robosuite.ai/installation/) to set up the simulator.
+
+## Usage
+
+### Data Extraction
+
+To extract wrench mechanics data from Robosuite, use the following script:
+
+""
+python extract_wrench_data.py
+"" id="do32fg"
+
+This will extract the 6D force-torque data for evaluation. You can specify the type of tasks or robots from which the data will be extracted.
+
+### Domain Shift Evaluation
+
+Run the evaluation script to analyze the effect of domain shift on robotic manipulation:
+
+""
+python evaluate_domain_shift.py --task <task_name> --robot <robot_name>
+"" id="0hj56d"
+
+> **Note**: Replace `<task_name>` and `<robot_name>` with the desired task and robot configuration. The repository includes predefined tasks such as `pick_and_place`, `stacking`, etc.
+
+### Visualization
+
+You can visualize the wrench data and evaluation results using the following command:
+
+""
+python visualize_results.py
+"" id="s43hv9"
+
+This will plot graphs for force-torque distributions and the effects of domain shift.
+
+## Project Structure
+
+""
+LIBERO-FT/
+│
+├── extract_wrench_data.py  # Script for extracting wrench data from Robosuite
+├── evaluate_domain_shift.py  # Script for evaluating domain shift
+├── visualize_results.py  # Visualization of evaluation results
+├── requirements.txt  # List of required dependencies
+├── data/  # Folder for storing extracted wrench data
+└── README.md  # This file
+"" id="6jy9qv"
+
+## Contributing
+
+We welcome contributions to `LIBERO-FT`! If you'd like to contribute, please fork the repository and submit a pull request. Before contributing, please ensure that your code follows the repository’s style and passes all tests.
+
+### How to Contribute
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Write tests for any new functionality.
+4. Make sure all tests pass.
+5. Submit a pull request with a description of your changes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- [Robosuite](https://robosuite.ai/) for providing the robotic simulation environment.
+- [LIBERO Benchmark](https://libero-benchmark.com/) for force-torque benchmarks used in this project.
 
 ---
 
-
-# Contents
-
-- [Installation](#Installation)
-- [Datasets](#Dataset)
-- [Getting Started](#Getting-Started)
-  - [Task](#Task)
-  - [Training](#Training)
-  - [Evaluation](#Evaluation)
-- [Citation](#Citation)
-- [License](#License)
-
-
-# Installtion
-Please run the following commands in the given order to install the dependency for **LIBERO**.
-```
-conda create -n libero python=3.8.13
-conda activate libero
-git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
-cd LIBERO
-pip install -r requirements.txt
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
-```
-
-Then install the `libero` package:
-```
-pip install -e .
-```
-
-# Datasets
-We provide high-quality human teleoperation demonstrations for the four task suites in **LIBERO**. To download the demonstration dataset, run:
-```python
-python benchmark_scripts/download_libero_datasets.py
-```
-By default, the dataset will be stored under the ```LIBERO``` folder and all four datasets will be downloaded. To download a specific dataset, use
-```python
-python benchmark_scripts/download_libero_datasets.py --datasets DATASET
-```
-where ```DATASET``` is chosen from `[libero_spatial, libero_object, libero_100, libero_goal`.
-
-**NEW!!!**
-
-Alternatively, you can download the dataset from HuggingFace by using:
-```python
-python benchmark_scripts/download_libero_datasets.py --use-huggingface
-```
-
-This option can also be combined with the specific dataset selection:
-```python
-python benchmark_scripts/download_libero_datasets.py --datasets DATASET --use-huggingface
-```
-
-The datasets hosted on HuggingFace are available at [here](https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets).
-
-
-# Getting Started
-
-For a detailed walk-through, please either refer to the documentation or the notebook examples provided under the `notebooks` folder. In the following, we provide example scripts for retrieving a task, training and evaluation.
-
-## Task
-
-The following is a minimal example of retrieving a specific task from a specific task suite.
-```python
-from libero.libero import benchmark
-from libero.libero.envs import OffScreenRenderEnv
-
-
-benchmark_dict = benchmark.get_benchmark_dict()
-task_suite_name = "libero_10" # can also choose libero_spatial, libero_object, etc.
-task_suite = benchmark_dict[task_suite_name]()
-
-# retrieve a specific task
-task_id = 0
-task = task_suite.get_task(task_id)
-task_name = task.name
-task_description = task.language
-task_bddl_file = os.path.join(get_libero_path("bddl_files"), task.problem_folder, task.bddl_file)
-print(f"[info] retrieving task {task_id} from suite {task_suite_name}, the " + \
-      f"language instruction is {task_description}, and the bddl file is {task_bddl_file}")
-
-# step over the environment
-env_args = {
-    "bddl_file_name": task_bddl_file,
-    "camera_heights": 128,
-    "camera_widths": 128
-}
-env = OffScreenRenderEnv(**env_args)
-env.seed(0)
-env.reset()
-init_states = task_suite.get_task_init_states(task_id) # for benchmarking purpose, we fix the a set of initial states
-init_state_id = 0
-env.set_init_state(init_states[init_state_id])
-
-dummy_action = [0.] * 7
-for step in range(10):
-    obs, reward, done, info = env.step(dummy_action)
-env.close()
-```
-Currently, we only support sparse reward function (i.e., the agent receives `+1` when the task is finished). As sparse-reward RL is extremely hard to learn, currently we mainly focus on lifelong imitation learning.
-
-## Training
-To start a lifelong learning experiment, please choose:
-- `BENCHMARK` from `[LIBERO_SPATIAL, LIBERO_OBJECT, LIBERO_GOAL, LIBERO_90, LIBERO_10]`
-- `POLICY` from `[bc_rnn_policy, bc_transformer_policy, bc_vilt_policy]`
-- `ALGO` from `[base, er, ewc, packnet, multitask]`
-
-then run the following:
-
-```shell
-export CUDA_VISIBLE_DEVICES=GPU_ID && \
-export MUJOCO_EGL_DEVICE_ID=GPU_ID && \
-python libero/lifelong/main.py seed=SEED \
-                               benchmark_name=BENCHMARK \
-                               policy=POLICY \
-                               lifelong=ALGO
-```
-Please see the documentation for the details of reproducing the study results.
-
-## Evaluation
-
-By default the policies will be evaluated on the fly during training. If you have limited computing resource of GPUs, we offer an evaluation script for you to evaluate models separately.
-
-```shell
-python libero/lifelong/evaluate.py --benchmark BENCHMARK_NAME \
-                                   --task_id TASK_ID \ 
-                                   --algo ALGO_NAME \
-                                   --policy POLICY_NAME \
-                                   --seed SEED \
-                                   --ep EPOCH \
-                                   --load_task LOAD_TASK \
-                                   --device_id CUDA_ID
-```
-
-# Citation
-If you find **LIBERO** to be useful in your own research, please consider citing our paper:
-
-```bibtex
-@article{liu2023libero,
-  title={LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning},
-  author={Liu, Bo and Zhu, Yifeng and Gao, Chongkai and Feng, Yihao and Liu, Qiang and Zhu, Yuke and Stone, Peter},
-  journal={arXiv preprint arXiv:2306.03310},
-  year={2023}
-}
-```
-
-# License
-| Component        | License                                                                                                                             |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| Codebase         | [MIT License](LICENSE)                                                                                                                      |
-| Datasets         | [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode)                 |
+> **Note**: If any specific part of the code, like force vectors or data handling, is unclear, you might want to include additional clarifications or placeholders where appropriate.
