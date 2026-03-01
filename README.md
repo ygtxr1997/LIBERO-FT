@@ -117,7 +117,7 @@ shape_meta: &shape_meta  # [WARNING]: the order of shape_meta is very important!
 ```
 
 We named this force-conditioned diffusion policy as `DP-Force`.
-The detailed evaluation results of `DP-Force` are available at: []()
+The detailed evaluation results of `DP-Force` are available at: [Benchmark Results](#benchmark-results)
 
 
 ### 4. Evaluate your policy under in-domain and force-related domain shift settings
@@ -188,18 +188,61 @@ This approach is reasonable, ensuring the resulting evaluation data is meaningfu
 Since the python environments for model training and simulator evaluating are usually inconsistent, we also provide a socket-based evaluator (based on [Uvicorn](https://uvicorn.dev/)) named `libero.force.force_benchmark.LiberoForceSocketEvaluator`. A usage example is available at [eval_socket.py](./eval_socket.py).
 
 
+## Benchmark Results
+
+We evaluated the baseline model `DP-Force` (Diffusion Policy with force modality) across 12 selected contact-dependent tasks. 
+For each irrelevant task, we train a single DP-force model (12 tasks corresponds to 9 models).
+The evaluation protocol tests the model's zero-shot robustness under various physical domain shifts: **In-domain** (`base`), **Friction** scale (`f2`, `f0.5`, and the worst-case `fmin`), **Stiffness** scale (`s50`, `s0.5`, and the worst-case `smin`), and **Gravity** scale (`g2`). 
+
+As shown in the table below, while the model achieves a solid average success rate of 72.83% in-domain, its performance degrades significantly under unseen physical variations. Notably, heavier gravity (`g2`) and worst-case friction shifts (`fmin`) cause the sharpest drops in performance (down to 41.00% and 57.83%, respectively), highlighting the challenging nature of zero-shot transfer in contact-rich environments.
+
+
+| Task_ID | Ckpt | base | f2 | f0.5 | s50 | s0.5 | g2 | fmin | smin |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **k10_close_put_blackbowl** | ep550 | 56 | 44 | | 52 | 62 | 22 | 44 | 52 |
+| **k1_open_top** | ep600 | 84 | 74 | | 72 | 88 | 48 | 74 | 72 |
+| **k5_close** | ep1350 | 80 | 88 | 74 | 76 | 76 | 46 | 74 | 76 |
+| **k10_close** | ep550 | 98 | 98 | | 96 | 94 | 44 | 98 | 94 |
+| **k2_open** | ep1350 | 88 | 56 | | 88 | 80 | 66 | 56 | 80 |
+| **k6_close** | ep600 | 56 | 50 | 70 | 54 | 70 | 22 | 50 | 54 |
+| **k1_open_bottom** | ep1000 | 82 | 36 | 74 | 70 | 78 | 34 | 36 | 70 |
+| **k4_close_bottom_open_top** | ep1400 | 46 | 28 | | 42 | 56 | 18 | 28 | 42 |
+| **k7_open** | ep700 | 70 | 76 | 56 | 72 | 46 | 34 | 56 | 46 |
+| **k1_open_top_put_bowl** | ep600 | 56 | 36 | | 52 | 66 | 28 | 36 | 52 |
+| **k4_close_bottom** | ep1400 | 98 | 94 | | 94 | 96 | 88 | 94 | 94 |
+| **s3_pick_book_place_leftcaddy** | ep850 | 60 | 48 | 54 | 50 | 50 | 42 | 48 | 50 |
+| **Averaged Success Rate (%)** |  | **72.83** | 60.67 | 65.60 | 68.17 | 71.83 | **41.00** | **57.83** | **65.17** |
+
+The map between `Task_ID` and original HDF5 filename can be found at: [documents/LIBERO_task_id.md](./documents/LIBERO_task_id.md).
+
+
+#### Ablation Study: Is force sensor helpful?
+
+To verify the effectiveness of the injected force-torque observations, we conducted an ablation study by masking out the force data (`force*0`). The table below compares the standard `DP-Force` model against the ablation baseline on two representative tasks. 
+
+| Model / Setting | Task_ID | Ckpt | base | f2 | g2 | s50 | Shift Avg |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **DP-Force** | k1_open_top | ep600 | **84** | **74** | **48** | 72 | **64.67** |
+| *DP w/o Force* | k1_open_top | ep700 | 78 | 66 | 36 | **74** | 58.67 |
+| **DP-Force** | k1_open_top_put_bowl | ep600 | **56** | **36** | **28** | **52** | **38.67** |
+| *DP w/o Force* | k1_open_top_put_bowl | ep700 | 52 | **36** | 26 | 44 | 35.33 |
+
+As shown in the `Shift Avg` column, the model equipped with force-torque sensors (`DP-Force`) achieves consistently higher average success rates under physical domain shifts compared to the baseline without force inputs. This demonstrates that incorporating the force modality not only maintains in-domain performance but, more importantly, enhances the model's robustness and adaptability to unexpected, unseen physical dynamics.
+
+
 ## Project Structure
 
-""
+```shell
 LIBERO-FT/
-│
-├── extract_wrench_data.py  # Script for extracting wrench data from Robosuite
-├── evaluate_domain_shift.py  # Script for evaluating domain shift
-├── visualize_results.py  # Visualization of evaluation results
-├── requirements.txt  # List of required dependencies
-├── data/  # Folder for storing extracted wrench data
-└── README.md  # This file
-"" id="6jy9qv"
+├── libero/
+│   ├── force/               # Core code for force-torque injection & domain shifts
+│   │   ├── ...              # (Contains HDF5Replayer, PhysicsHelper, etc.)
+│   └── datasets/            # Recommended directory for storing HDF5 datasets
+├── notebooks/               # Jupyter notebooks for usage examples
+├── eval_socket.py           # Socket-based evaluation script 
+├── requirements.txt         # Dependencies
+└── README.md                # Project documentation
+```
 
 
 ## Limitations
@@ -227,5 +270,6 @@ We welcome contributions to `LIBERO-FT`! If you'd like to contribute, please for
 
 ## Acknowledgements
 
+- [Mujoco](https://mujoco.org/) for the underlying force sensor simulation.
 - [Robosuite](https://robosuite.ai/) for providing the robotic simulation environment.
-- [LIBERO Benchmark](https://libero-benchmark.com/) for force-torque benchmarks used in this project.
+- [LIBERO Benchmark](https://libero-benchmark.com/) which this codebose highly depends on.
