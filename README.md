@@ -244,6 +244,14 @@ LIBERO-FT/
 └── README.md                # Project documentation
 ```
 
+## TODO List
+
+- [ ] **Release DP-Force pipeline**: Release the complete training and testing codebase for the `DP-Force` baseline.
+- [ ] **Scale up dataset**: Process and inject force-torque data for the remaining tasks in the LIBERO-90/130 datasets.
+- [ ] **More Baselines**: Evaluate multi-task and language-conditioned foundation models.
+- [ ] **Dynamic Domain Shifts**: Implement intra-episode physical parameter changes (e.g., objects becoming slippery dynamically during the operation).
+- [ ] **New contact-rich tasks**: Design and integrate genuine contact-rich tasks (e.g., screwdriving, wiping glass, sweeping) from scratch.
+
 
 ## Limitations
 
