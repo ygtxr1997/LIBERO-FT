@@ -57,7 +57,9 @@ We provide a class `libero.force.hdf5_replayer.HDF5Replayer` to replay LIBERO tr
 
 A usage example for `HDF5Replayer` is available at: [notebooks/force_hdf5_replayer.ipynb](./notebooks/force_hdf5_replayer.ipynb).
 
-![replay_k1_open_put](./images/replay_00_rst=-1_suc=1_KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it.bddl.gif)
+<div align="center">
+  <img src="./images/replay_00_rst=-1_suc=1_KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it.bddl.gif" width="100%" alt="replay_k1_open_put">
+</div>
 
 
 ### 2. 
