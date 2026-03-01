@@ -1,53 +1,67 @@
 <div align="center">
-  <img src="images/LIEBRO-FT_logo2.png" width="360">
-  
-  # LIBERO-FT: Evaluating Robotic Manipulation with Force-Related Domain Shifts
+  <img src="images/LIEBRO-FT_logo2.png">
+
+  # LIBERO-FT: Evaluating Robotic Manipulation under Force-Related Domain Shifts
 </div>
 
 
 ## Overview
 
-`LIBERO-FT` is a toolkit (including benchmark) developed for evaluating robotic manipulation under force-related domain shifts. 
+`LIBERO-FT` is a toolkit (including benchmark) developed for evaluating robotic manipulation under **force-related** domain shifts. 
 Highly based on the LIBERO benchmark, it can be considered an extension that builds upon its core functionality. 
 Key features include extracting 6D wrench force-torque data from the simulator (Mujoco), replaying and saving benchmark trajectories, 
-and modifying physical properties like gripper stiffness and friction to simulate domain shifts (based on Robosuite). 
-This repository aims to provide a robust framework for testing and evaluating the adaptability of robotic models to 
-varying mechanical conditions, enabling thorough analysis before deploying force-based policies into real-world scenarios.
+and modifying physical properties like gripper stiffness and friction to simulate domain shifts (based on [Robosuite](https://robosuite.ai/)). 
+This repository aims to provide a framework for testing and evaluating the adaptability of robotic models to 
+varying physical conditions, enabling thorough analysis before deploying force-based policies into real-world scenarios.
 
 
 ## Features
 
 - **Read Mujoco 6D force-torque data (MujocoSensorReader)**: Reads raw 6D wrench force-torque data from the native Mujoco sensors and exposes it to the LIBERO `OffScreenRenderEnv` via the `WrenchObsWrapper`.
 - **Replay original LIBERO demonstrations and save force-torque data (HDF5Replayer)**: Replays full trajectories based on LIBERO benchmark demonstrations (e.g., LIBERO-90), reading and saving force-torque data into new HDF5 files.
-- **Physical domain shift (PhysicsHelper)**: Modifies physical properties like gripper stiffness, friction, and gravity in Robosuite, and evaluates model robustness against mechanical domain shifts using the `LiberoForceSocketEvaluator`.
-- **A training&testing example**: Demonstrates training and testing of a diffusion policy with added mechanical inputs, evaluating performance under various domain shifts after in-domain training.
+- **Physical domain shift (PhysicsHelper)**: Modifies physical properties like gripper stiffness, friction, and gravity in Robosuite, and evaluates model robustness against physical domain shifts using the `LiberoForceSocketEvaluator`.
+- **A training&testing example**: Demonstrates training and testing of a diffusion policy with added force-torque inputs, evaluating performance under various domain shifts after in-domain training.
+
 
 ## Installation
 
-To use `LIBERO-FT`, follow the steps below to install dependencies and set up the repository.
+`LIBERO-FT` shares most of its environment with the original [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO?tab=readme-ov-file#installtion), with only a few additional dependencies required for debugging and training purposes. To get started, follow these steps:
 
-### Prerequisites
-
-- Python 3.7+
-- Robosuite (and its dependencies)
-- [Other necessary libraries like `numpy`, `matplotlib`, `pandas`, etc.]
-
-### Clone the Repository
-
-""
-git clone https://github.com/your-username/LIBERO-FT.git
+```shell
+# Copied from original LIBERO
+conda create -n libero python=3.8.13
+conda activate libero
+git clone https://github.com/ygtxr1997/LIBERO-FT.git  # different here
 cd LIBERO-FT
-"" id="4w2zrt"
-
-### Install Dependencies
-
-""
 pip install -r requirements.txt
-"" id="o2kjxx"
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
 
-> **Note**: If you don't have Robosuite installed, please follow the [official Robosuite installation guide](https://robosuite.ai/installation/) to set up the simulator.
+# Install additional dependencies
+pip install git+https://github.com/ygtxr1997/RoboKit.git@6066dbb
+```
+
+
+## Datasets
+
+Our replayed trajectories with **wrench force-torque sensory data** injected: [https://huggingface.co/datasets/ygtxr1997/LIBERO-FT](https://huggingface.co/datasets/ygtxr1997/LIBERO-FT)
+
+Original LIBERO data without force-torque data: [https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets](https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets)
+
 
 ## Usage
+
+### 1. Replay original LIBERO trajectory and inject force-torque sensory data
+
+We provide a class `libero.force.hdf5_replayer.HDF5Replayer` to replay LIBERO trajectories online on your own GPU.
+`HDF5Replayer` can construct the full environment according to the meta info saved in LIBERO HDF5 files, replay actions frame-by-frame, and consequently check if the replayed trajectory succeds or not.
+
+A usage example for `HDF5Replayer` is available at: [notebooks/force_hdf5_replayer.ipynb](./notebooks/force_hdf5_replayer.ipynb).
+
+![replay_k1_open_put](images/replay_00_rst=-1_suc=1_KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it.bddl.gif)
+
+
+### 2. 
+
 
 ### Data Extraction
 
@@ -104,9 +118,17 @@ We welcome contributions to `LIBERO-FT`! If you'd like to contribute, please for
 4. Make sure all tests pass.
 5. Submit a pull request with a description of your changes.
 
-## License
+## Citation
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```latex
+@misc{LIBEROFT2026,
+  author = {{Yuan, Ge and Xu, Dong}},
+  title = {{LIBERO-FT: Evaluating Robotic Manipulation under Force-Related Domain Shifts}},
+  year = {2026},
+  publisher = {GitHub},
+  howpublished = {\url{https://github.com/ygtxr1997/LIBERO-FT}},
+}
+```
 
 ## Acknowledgements
 
