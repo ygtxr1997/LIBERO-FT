@@ -9,7 +9,7 @@
   <img src="./images/k4_examples.gif" width="100%" alt="replay_k1_open_put">
 </div>
 
-## Overview
+## 📖 Overview
 
 `LIBERO-FT` is a toolkit (including benchmark) developed for evaluating robotic manipulation under **force-related** domain shifts. 
 Highly based on the LIBERO benchmark, it can be considered an extension that builds upon its core functionality. 
@@ -19,7 +19,7 @@ This repository aims to provide a framework for testing and evaluating the adapt
 varying physical conditions, enabling thorough analysis before deploying force-based policies into real-world scenarios.
 
 
-## Features
+## ✨ Features
 
 - **Read Mujoco 6D force-torque data (MujocoSensorReader)**: Reads raw 6D wrench force-torque data from the native Mujoco sensors and exposes it to the LIBERO `OffScreenRenderEnv` via the `WrenchObsWrapper`.
 - **Replay original LIBERO demonstrations and save force-torque data (HDF5Replayer)**: Replays full trajectories based on LIBERO benchmark demonstrations (e.g., LIBERO-90), reading and saving force-torque data into new HDF5 files.
@@ -27,7 +27,7 @@ varying physical conditions, enabling thorough analysis before deploying force-b
 - **A training&testing example**: Demonstrates training and testing of a diffusion policy with added force-torque inputs, evaluating performance under various domain shifts after in-domain training.
 
 
-## Installation
+## 🛠️ Installation
 
 `LIBERO-FT` shares most of its environment with the original [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO?tab=readme-ov-file#installtion), with only a few additional dependencies required for debugging and training purposes. To get started, follow these steps:
 
@@ -45,16 +45,16 @@ pip install git+https://github.com/ygtxr1997/RoboKit.git@6066dbb
 ```
 
 
-## Datasets
+## 💽 Datasets
 
 Our replayed trajectories with **wrench force-torque sensory data** injected: [https://huggingface.co/datasets/ygtxr1997/LIBERO-FT](https://huggingface.co/datasets/ygtxr1997/LIBERO-FT)
 
 Original LIBERO data without force-torque data: [https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets](https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets)
 
 
-## Usage
+## 🚀 Usage
 
-### 1. Replay original LIBERO trajectory and save force-torque sensory data
+### 1. 🎬 Replay original LIBERO trajectory and save force-torque sensory data
 
 We provide a class `libero.force.hdf5_replayer.HDF5Replayer` to replay LIBERO trajectories online on your own GPU.
 `HDF5Replayer` can construct the full environment according to the meta info saved in LIBERO HDF5 files, replay actions frame-by-frame, and consequently check if the replayed trajectory succeds or not.
@@ -74,7 +74,7 @@ Below are the visualization examples of 2x speedup replayed trajectories (left t
 </div>
 
 
-### 2. Check the newly saved HDF5 (with force-torque sensory data)
+### 2. 🔍 Check the newly saved HDF5 (with force-torque sensory data)
 
 Structure of new HDF5 data saved by `HDF5Replayer`, where a new key named `data/demo_9/obs/wrenches` is added into it like this:
 
@@ -98,7 +98,7 @@ Structure of new HDF5 data saved by `HDF5Replayer`, where a new key named `data/
 ```
 The shape (201, 6) means that the length of a single trajectory is 201 and the dimension of wrench mounted force-torque sensory data is 6.
 
-### 3. Train your own force-conditioned action policy
+### 3. 🧠 Train your own force-conditioned action policy
 
 For training and evalution, we have adoped [Diffusion Policy](https://github.com/real-stanford/diffusion_policy) as the baseline and added extra force modality input like this:
 
@@ -124,7 +124,7 @@ We named this force-conditioned diffusion policy as `DP-Force`.
 The detailed evaluation results of `DP-Force` are available at: [Benchmark Results](#benchmark-results)
 
 
-### 4. Evaluate your policy under in-domain and force-related domain shift settings
+### 4. ⚖️ Evaluate your policy under in-domain and force-related domain shift settings
 
 #### Simulator with force-torque observation
 
@@ -192,7 +192,7 @@ This approach is reasonable, ensuring the resulting evaluation data is meaningfu
 Since the python environments for model training and simulator evaluating are usually inconsistent, we also provide a socket-based evaluator (based on [Uvicorn](https://uvicorn.dev/)) named `libero.force.force_benchmark.LiberoForceSocketEvaluator`. A usage example is available at [eval_socket.py](./eval_socket.py).
 
 
-## Benchmark Results
+## 🏆 Benchmark Results
 
 We evaluated the baseline model `DP-Force` (Diffusion Policy with force modality) across 12 selected contact-dependent tasks. 
 For each irrelevant task, we train a single DP-force model (12 tasks corresponds to 9 models).
@@ -234,7 +234,7 @@ To verify the effectiveness of the injected force-torque observations, we conduc
 As shown in the `Shift Avg` column, the model equipped with force-torque sensors (`DP-Force`) achieves consistently higher average success rates under physical domain shifts compared to the baseline without force inputs. This demonstrates that incorporating the force modality not only maintains in-domain performance but, more importantly, enhances the model's robustness and adaptability to unexpected, unseen physical dynamics.
 
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```shell
 LIBERO-FT/
@@ -248,7 +248,7 @@ LIBERO-FT/
 └── README.md                # Project documentation
 ```
 
-## TODO List
+## ✅ TODO List
 
 - [ ] **Release DP-Force pipeline**: Release the complete training and testing codebase for the `DP-Force` baseline.
 - [ ] **Scale up dataset**: Process and inject force-torque data for the remaining tasks in the LIBERO-90/130 datasets.
@@ -257,18 +257,18 @@ LIBERO-FT/
 - [ ] **New contact-rich tasks**: Design and integrate genuine contact-rich tasks (e.g., screwdriving, wiping glass, sweeping) from scratch.
 
 
-## Limitations
+## 🚧 Limitations
 
 - **Lack of True Contact-Rich Tasks & Data Scale:** The original LIBERO benchmark does not provide dedicated contact-rich tasks (e.g., screwdriving, wiping glass, sweeping). Constrained by computational resources, we have currently only processed 11 open/close tasks and 1 pick-and-place task from LIBERO-90, as these still heavily rely on force feedback. We will continue processing more data and highly encourage the community to contribute by sharing the processing workload or designing genuine contact-rich tasks from scratch.
 - **Limited Baselines:** We only benchmarked Diffusion Policy with additional force modality input, which is nominally a single-task model without natural language conditioning support. We plan to evaluate more multi-task and language-conditioned baselines in the future and welcome researchers to share their own benchmarking results on our dataset.
 - **Simplified Domain Shifts:** The current implementation of force-related domain shifts is relatively simple and may not be comprehensive enough. For instance, physical parameters cannot dynamically change over time within an episode, and we have not fine-tuned shift parameters for each individual task.
 
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions to `LIBERO-FT`! If you'd like to contribute, please fork the repository and submit a pull request.
 
-## Citation
+## 🎓 Citation
 
 ```latex
 @misc{LIBEROFT2026,
@@ -280,7 +280,7 @@ We welcome contributions to `LIBERO-FT`! If you'd like to contribute, please for
 }
 ```
 
-## Acknowledgements
+## ❤️ Acknowledgements
 
 - [Mujoco](https://mujoco.org/) for the underlying force sensor simulation.
 - [Robosuite](https://robosuite.ai/) for providing the robotic simulation environment.
