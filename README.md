@@ -57,8 +57,16 @@ We provide a class `libero.force.hdf5_replayer.HDF5Replayer` to replay LIBERO tr
 
 A usage example for `HDF5Replayer` is available at: [notebooks/force_hdf5_replayer.ipynb](./notebooks/force_hdf5_replayer.ipynb).
 
+Below are the visualization examples of 2x speedup replayed trajectories (left to right are: original observation saved in LIBERO HDF5, online observation during replay, 6D force-torque sensory data):
+
 <div align="center">
   <img src="./images/replay_00_rst=-1_suc=1_KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it.bddl.gif" width="100%" alt="replay_k1_open_put">
+  <p>(Click to play) Based on LIBERO-90: KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it</p>
+</div>
+
+<div align="center">
+  <img src="./images/replay_00_rst=-1_suc=1_KITCHEN_SCENE7_open_the_microwave.bddl.gif" width="100%" alt="replay_k1_open_put">
+  <p>(Click to play) Based on LIBERO-90: KITCHEN_SCENE7_open_the_microwave</p>
 </div>
 
 
