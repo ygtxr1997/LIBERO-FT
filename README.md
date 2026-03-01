@@ -5,6 +5,10 @@
 </div>
 
 
+<div align="center">
+  <img src="./images/k4_examples.gif" width="100%" alt="replay_k1_open_put">
+</div>
+
 ## Overview
 
 `LIBERO-FT` is a toolkit (including benchmark) developed for evaluating robotic manipulation under **force-related** domain shifts. 

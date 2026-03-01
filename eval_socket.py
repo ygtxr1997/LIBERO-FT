@@ -138,10 +138,10 @@ def main(checkpoint, output_dir, device, port,
     # env_runners = load_env_runner(cfg, output_dir)
     # Op2. Load envs one by one using generator (save memory)
     # env_runners = load_env_runner_generator(cfg, output_dir)
-    dataset_root = "/home/geyuan/code/LIBERO-FT/libero/datasets/"
+    dataset_root = "/home/geyuan/code/LIBERO-FT/libero/datasets/libero_force"
     # dataset_subname = "libero_90"
     # hdf5_fn = "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet_and_open_the_top_drawer_demo.hdf5"
-    dataset_subname = "libero_force"
+    dataset_subname = "libero_90"
     HDF5_MAP = {
         # Debug
         "tmp": "tmp_replayed_wrench.hdf5",
